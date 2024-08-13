@@ -22,6 +22,9 @@ model Form {
   formSubmissions FormSubmissions[]
 
   createdAt DateTime @default(now())
+
+  @@unique([userId, name])
+  @@index([userId, name])
 }
 
 model FormSubmissions {
