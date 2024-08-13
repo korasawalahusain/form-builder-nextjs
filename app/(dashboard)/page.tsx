@@ -4,6 +4,7 @@ import { ReactNode, Suspense } from "react";
 import { HiCursorClick } from "react-icons/hi";
 import { TbArrowBounce } from "react-icons/tb";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CreateFormButton } from "@/components/index";
 import { Separator } from "@/components/ui/separator";
 import { getFormStats, GetFormStatsReturn } from "@/actions/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,9 @@ export default function Home() {
       <Separator className="my-6" />
       <h2 className="font-bold text-4xl col-span-2">Your forms</h2>
       <Separator className="my-6" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CreateFormButton />
+      </div>
     </div>
   );
 }
