@@ -8,7 +8,7 @@ export default function DashboardLayout({
   children,
 }: PropsWithChildren<Props>) {
   return (
-    <div className="flex flex-col min-h-[100svh] max-h-[100svh] min-w-[100svw] bg-background">
+    <div className="flex flex-col min-h-screen max-h-screen min-w-full bg-background">
       <nav className="flex h-[60px] px-4 py-2 items-center justify-between border-b border-border">
         <Logo />
         <div className="flex gap-4 items-center">
