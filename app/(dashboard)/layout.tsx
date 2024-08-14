@@ -1,6 +1,6 @@
-import { UserButton } from "@clerk/nextjs";
-import React, { PropsWithChildren } from "react";
-import { Logo, ThemeSwitcher } from "@/components/index";
+import { UserButton } from '@clerk/nextjs';
+import React, { PropsWithChildren } from 'react';
+import { Logo, ThemeSwitcher } from '@components';
 
 type Props = {};
 
@@ -8,15 +8,17 @@ export default function DashboardLayout({
   children,
 }: PropsWithChildren<Props>) {
   return (
-    <div className="flex flex-col min-h-screen max-h-screen min-w-full bg-background">
-      <nav className="flex h-[60px] px-4 py-2 items-center justify-between border-b border-border">
+    <div className='flex h-[100svh] w-[100svw] flex-col overflow-hidden bg-background'>
+      <nav className='flex h-[60px] items-center justify-between border-b border-border px-4 py-2'>
         <Logo />
-        <div className="flex gap-4 items-center">
+        <div className='flex items-center gap-4'>
           <ThemeSwitcher />
-          <UserButton afterSignOutUrl="/sign-in" />
+          <UserButton />
         </div>
       </nav>
-      <main className="flex w-full flex-grow">{children}</main>
+      <main className='flex flex-1 flex-col overflow-y-auto overflow-x-hidden'>
+        {children}
+      </main>
     </div>
   );
 }

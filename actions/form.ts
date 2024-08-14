@@ -1,11 +1,13 @@
-"use server";
+'use server';
 
-import prisma from "@/lib/prisma";
-import { Form } from "@prisma/client";
-import { currentUser } from "@clerk/nextjs/server";
-import { FormSchemaType, formSchema as createFormSchema } from "@/schemas/form";
+import { prisma } from '@lib';
+import { Form } from '@prisma/client';
+import { FormElementInstance } from '@components';
+import { currentUser } from '@clerk/nextjs/server';
+import { FormSchemaType, formSchema as createFormSchema } from '@schemas';
 
 class UserNotFoundErr extends Error {}
+class FormNotFoundErr extends Error {}
 class InvalidDataErr extends Error {}
 
 export async function createForm(data: FormSchemaType): Promise<number> {
@@ -28,7 +30,7 @@ export async function createForm(data: FormSchemaType): Promise<number> {
   });
 
   if (!newForm) {
-    throw new Error("Something went wrong!");
+    throw new Error('Something went wrong!');
   }
 
   return newForm.id;
@@ -45,21 +47,144 @@ export async function getForms(): Promise<Form[]> {
       userId: user.id,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 
   return forms;
 }
 
-export type GetFormStatsReturn = {
+export async function getFormById(id: number): Promise<Form> {
+  const user = await currentUser();
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  const form = await prisma.form.findUnique({
+    where: {
+      id,
+      userId: user.id,
+    },
+  });
+
+  if (!form) {
+    throw new FormNotFoundErr();
+  }
+
+  return form;
+}
+
+export async function getFormContentByURL(
+  url: string,
+): Promise<FormElementInstance[]> {
+  const form = await prisma.form.update({
+    where: {
+      shareURL: url,
+      published: true,
+    },
+    data: {
+      visits: {
+        increment: 1,
+      },
+    },
+    select: {
+      content: true,
+      published: true,
+    },
+  });
+
+  if (!form) {
+    throw new FormNotFoundErr();
+  }
+
+  return JSON.parse(form.content);
+}
+
+export async function submitFormByURL(
+  url: string,
+  content: { [key: string]: string },
+): Promise<Form> {
+  const form = await prisma.form.update({
+    where: {
+      shareURL: url,
+      published: true,
+    },
+    data: {
+      submissions: {
+        increment: 1,
+      },
+      formSubmissions: {
+        create: {
+          content: JSON.stringify(content),
+        },
+      },
+    },
+  });
+
+  if (!form) {
+    throw new FormNotFoundErr();
+  }
+
+  return form;
+}
+
+export async function publishFormById(id: number): Promise<Form> {
+  const user = await currentUser();
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  const form = await prisma.form.update({
+    where: {
+      id,
+      userId: user.id,
+    },
+    data: {
+      published: true,
+    },
+  });
+
+  if (!form) {
+    throw new FormNotFoundErr();
+  }
+
+  return form;
+}
+
+export async function updateFormById(
+  id: number,
+  elements: FormElementInstance[],
+): Promise<Form> {
+  const user = await currentUser();
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  const form = await prisma.form.update({
+    where: {
+      id,
+      userId: user.id,
+    },
+    data: {
+      content: JSON.stringify(elements),
+    },
+  });
+
+  if (!form) {
+    throw new FormNotFoundErr();
+  }
+
+  return form;
+}
+
+export type FormStats = {
   visits: number;
   submissions: number;
   submissionRate: number;
   bounceRate: number;
 };
 
-export async function getFormStats(): Promise<GetFormStatsReturn> {
+export async function getFormStats(): Promise<FormStats> {
   const user = await currentUser();
   if (!user) {
     throw new UserNotFoundErr();
@@ -79,7 +204,35 @@ export async function getFormStats(): Promise<GetFormStatsReturn> {
   const submissions = stats._sum.submissions || 0;
 
   const submissionRate = visits > 0 ? (submissions / visits) * 100 : 0;
-  const bounceRate = 100 - submissionRate;
+  const bounceRate = visits > 0 ? 100 - submissionRate : 0;
 
   return { visits, submissions, submissionRate, bounceRate };
+}
+
+export type FormWithStats = Form & FormStats;
+
+export async function getFormWithStatsById(id: number): Promise<FormWithStats> {
+  const user = await currentUser();
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  const form = await prisma.form.findUnique({
+    where: {
+      id,
+      userId: user.id,
+    },
+  });
+
+  if (!form) {
+    throw new FormNotFoundErr();
+  }
+
+  const visits = form.visits || 0;
+  const submissions = form.submissions || 0;
+
+  const submissionRate = visits > 0 ? (submissions / visits) * 100 : 0;
+  const bounceRate = visits > 0 ? 100 - submissionRate : 0;
+
+  return { ...form, submissionRate, bounceRate };
 }

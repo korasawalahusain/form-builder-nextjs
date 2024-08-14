@@ -1,13 +1,5 @@
-"use client";
+'use client';
 
-import {
-  Form,
-  FormItem,
-  FormLabel,
-  FormField,
-  FormControl,
-  FormMessage,
-} from "./ui/form";
 import {
   Dialog,
   DialogTitle,
@@ -16,22 +8,32 @@ import {
   DialogTrigger,
   DialogContent,
   DialogDescription,
-} from "./ui/dialog";
-import React from "react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { toast } from "./ui/use-toast";
-import { Textarea } from "./ui/textarea";
-import { useForm } from "react-hook-form";
-import { createForm } from "@/actions/form";
-import { ImSpinner2 } from "react-icons/im";
-import { BsFileEarmarkPlus } from "react-icons/bs";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema, FormSchemaType } from "@/schemas/form";
+} from '@ui/dialog';
+import {
+  Form,
+  FormItem,
+  FormLabel,
+  FormField,
+  FormControl,
+  FormMessage,
+} from '@ui/form';
+import React from 'react';
+import { Input } from '@ui/input';
+import { Button } from '@ui/button';
+import { createForm } from '@actions';
+import { toast } from '@ui/use-toast';
+import { Textarea } from '@ui/textarea';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { ImSpinner2 } from 'react-icons/im';
+import { BsFileEarmarkPlus } from 'react-icons/bs';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formSchema, FormSchemaType } from '@schemas';
 
 type Props = {};
 
 export default function CreateFormButton({}: Props) {
+  const router = useRouter();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
   });
@@ -39,17 +41,18 @@ export default function CreateFormButton({}: Props) {
   async function onSubmit(values: FormSchemaType) {
     try {
       const newFormId = await createForm(values);
-      console.log("NEW FORM ID: ", newFormId);
 
       toast({
-        title: "Success",
-        description: "New form created successfully",
+        title: 'Success',
+        description: 'New form created successfully',
       });
+
+      router.push(`builder/${newFormId}`);
     } catch (error) {
       toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Something went wrong, please try again later",
+        title: 'Error',
+        variant: 'destructive',
+        description: 'Something went wrong, please try again later',
       });
     }
   }
@@ -58,11 +61,11 @@ export default function CreateFormButton({}: Props) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
-          className="group border border-primary/70 h-[190px] border-dashed gap-4 flex flex-col items-center justify-center hover:border-primary hover:cursor-pointer"
+          variant='outline'
+          className='group flex h-[190px] flex-col items-center justify-center gap-4 border border-dashed border-primary/70 hover:cursor-pointer hover:border-primary'
         >
-          <BsFileEarmarkPlus className="h-8 w-9 text-muted-foreground group-hover:text-primary" />
-          <p className="font-bold text-xl text-muted-foreground group-hover:text-primary">
+          <BsFileEarmarkPlus className='h-8 w-9 text-muted-foreground group-hover:text-primary' />
+          <p className='text-xl font-bold text-muted-foreground group-hover:text-primary'>
             Create new form
           </p>
         </Button>
@@ -75,9 +78,9 @@ export default function CreateFormButton({}: Props) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form className="space-y-2" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className='space-y-2' onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
-              name="name"
+              name='name'
               control={form.control}
               render={({ field, fieldState }) => (
                 <FormItem>
@@ -90,7 +93,7 @@ export default function CreateFormButton({}: Props) {
               )}
             />
             <FormField
-              name="description"
+              name='description'
               control={form.control}
               render={({ field, fieldState }) => (
                 <FormItem>
@@ -106,12 +109,12 @@ export default function CreateFormButton({}: Props) {
         </Form>
         <DialogFooter>
           <Button
-            className="w-full mt-4"
+            className='mt-4 w-full'
             onClick={form.handleSubmit(onSubmit)}
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? (
-              <ImSpinner2 className="animate-spin" />
+              <ImSpinner2 className='animate-spin' />
             ) : (
               <span>Save</span>
             )}
