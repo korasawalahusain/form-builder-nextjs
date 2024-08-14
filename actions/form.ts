@@ -1,9 +1,9 @@
 'use server';
 
 import { prisma } from '@lib';
-import { Form } from '@prisma/client';
 import { FormElementInstance } from '@components';
 import { currentUser } from '@clerk/nextjs/server';
+import { Form, FormSubmissions } from '@prisma/client';
 import { FormSchemaType, formSchema as createFormSchema } from '@schemas';
 
 class UserNotFoundErr extends Error {}
@@ -64,6 +64,35 @@ export async function getFormById(id: number): Promise<Form> {
     where: {
       id,
       userId: user.id,
+    },
+  });
+
+  if (!form) {
+    throw new FormNotFoundErr();
+  }
+
+  return form;
+}
+
+export type FormWithFormSubmissions = Form & {
+  formSubmissions: FormSubmissions[];
+};
+
+export async function getFormSubmissions(
+  id: number,
+): Promise<FormWithFormSubmissions> {
+  const user = await currentUser();
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  const form = await prisma.form.findUnique({
+    where: {
+      id,
+      userId: user.id,
+    },
+    include: {
+      formSubmissions: true,
     },
   });
 

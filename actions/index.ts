@@ -7,7 +7,8 @@ export {
   updateFormById,
   submitFormByURL,
   publishFormById,
+  getFormSubmissions,
   getFormContentByURL,
   getFormWithStatsById,
 } from './form';
-export type { FormStats, FormWithStats } from './form';
+export type { FormStats, FormWithStats, FormWithFormSubmissions } from './form';
