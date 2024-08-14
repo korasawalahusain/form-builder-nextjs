@@ -11,6 +11,9 @@ export default function Provider({ children }: PropsWithChildren<Props>) {
   const { theme } = useTheme();
   return (
     <ClerkProvider
+      afterSignOutUrl='/sign-in'
+      signInFallbackRedirectUrl='/'
+      signUpFallbackRedirectUrl='/'
       appearance={{
         ...(theme === 'dark' && { baseTheme: dark }),
       }}
