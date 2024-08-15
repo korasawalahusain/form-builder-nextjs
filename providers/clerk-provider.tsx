@@ -8,14 +8,18 @@ import React, { PropsWithChildren } from 'react';
 type Props = {};
 
 export default function Provider({ children }: PropsWithChildren<Props>) {
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
+
   return (
     <ClerkProvider
       afterSignOutUrl='/sign-in'
       signInFallbackRedirectUrl='/'
       signUpFallbackRedirectUrl='/'
       appearance={{
-        ...(theme === 'dark' && { baseTheme: dark }),
+        ...((theme === 'dark' ||
+          (theme === 'system' && systemTheme === 'dark')) && {
+          baseTheme: dark,
+        }),
       }}
     >
       {children}
