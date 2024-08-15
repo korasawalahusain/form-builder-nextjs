@@ -82,16 +82,18 @@ export default function BuilderLoading({}: Props) {
 
 function SidebarButtonLaodingOverlay() {
   return (
-    <Button
-      disabled
-      variant='outline'
-      className='flex h-[120px] w-[120px] cursor-grab flex-col gap-2'
-    >
-      <Skeleton className='h-8 w-8' />
-      <Skeleton>
-        <p className='w-16 text-xs opacity-0'>Field label</p>
-      </Skeleton>
-    </Button>
+    <Skeleton>
+      <Button
+        disabled
+        variant='outline'
+        className='flex h-[120px] w-[120px] cursor-grab flex-col gap-2'
+      >
+        <Skeleton className='h-8 w-8' />
+        <Skeleton>
+          <p className='w-16 text-xs opacity-0'>Field label</p>
+        </Skeleton>
+      </Button>
+    </Skeleton>
   );
 }
 
