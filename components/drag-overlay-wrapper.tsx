@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDesigner } from '@providers';
 import { ElementsType, FormElements } from './form-elements';
 import { Active, DragOverlay, useDndMonitor } from '@dnd-kit/core';
-import { SidebarButtonElementDragOverlay } from './siderbar-button-element';
+import { SidebarButtonElementDragOverlay } from './sidebar-button-element';
 
 type Props = {};
 

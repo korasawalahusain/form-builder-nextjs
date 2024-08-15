@@ -1,7 +1,7 @@
 import React from 'react';
 import { Separator } from '@ui/separator';
 import { FormElements } from './form-elements';
-import SidebarButtonElement from './siderbar-button-element';
+import SidebarButtonElement from './sidebar-button-element';
 
 type Props = {};
 

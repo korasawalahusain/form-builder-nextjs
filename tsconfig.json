@@ -18,13 +18,13 @@
       }
     ],
     "paths": {
-      "@lib*": ["./lib/index"],
+      "@lib": ["./lib/index"],
       "@styles*": ["./styles/*"],
-      "@ui*": ["./components/ui/*"],
-      "@actions*": ["./actions/index"],
-      "@schemas*": ["./schemas/index"],
-      "@providers*": ["./providers/index"],
-      "@components*": ["./components/index"]
+      "@ui/*": ["./components/ui/*"],
+      "@actions": ["./actions/index"],
+      "@schemas": ["./schemas/index"],
+      "@providers": ["./providers/index"],
+      "@components": ["./components/index"]
     }
   },
   "exclude": ["node_modules"],
